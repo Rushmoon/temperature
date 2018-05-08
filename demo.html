@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>demo</title>
+    <style>
+        ul{
+            list-style: none;
+        }
+        a{
+            text-decoration: none;
+        }
+        .container{
+            width: 100%;
+        }
+        .container ul{
+            display: flex;
+            margin:auto;
+            width: 80%;
+
+        }
+        .container ul li{
+            float: left;
+            flex: 1;
+            background-color: #4f3c42;
+            height: 40px;
+        }
+        .container ul li>span{
+             display: block;
+             font-size: 20px;
+            font-family: SimSun-ExtB;
+             height: 40px;
+             line-height: 40px;
+             text-align: center;
+             color: crimson;
+         }
+    </style>
+</head>
+<body ng-app="app">
+<div class="container" ng-controller="NavController">
+    <ul>
+        <li><span>年份</span></li>
+        <li><span>月份</span></li>
+        <li><span>日期</span></li>
+        <li><span>温度</span></li>
+    </ul>
+    <form name="Form">
+        月<input type="text" name="year" ng-model="data.month">日<input type="text" name="day" ng-model="data.day">
+        月<input type="text" name="day" ng-model="data.monthL">日<input type="text" name="day" ng-model="data.dayL">
+        <input type="submit" name="sub" value="提交" ng-click="ok()">
+    </form>
+</div>
+<div class="view">
+    <ul ng-controller="NavController">
+        <li ng-repeat="temp in temps">{{temp.year}}年{{temp.month}}月{{temp.day}}日{{temp.temputer}}</li>
+    </ul>
+</div>
+<script src="js/angular-1.6.js"></script>
+<script src="js/angular-route-1.6.js"></script>
+<script>
+    var App = angular.module('app',['ngRoute']);
+    App.controller('NavController',['$scope','$http',function($scope,$http){
+       $scope.ok=function() {
+           console.log($scope.data);
+           var monthF=$scope.data.month,
+               monthL = $scope.data.monthL,
+               dayF = $scope.data.day,
+               dayL = $scope.data.dayL;
+        $http({
+            url: '1901.php',
+            method: 'post',
+            headers: {'Content-Type':'application/x-www-form-urlencoded'},
+            data:{  monthF:monthF,
+                    monthL:monthL,
+                    dayF:dayF,
+                    dayL:dayL
+                }
+
+        }).then(function (data) {
+            console.log(data.data);
+            $scope.temps=data.data;
+        });
+
+       }
+    }]);
+</script>
+</body>
+</html>
